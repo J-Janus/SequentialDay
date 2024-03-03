@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wear_app/ambient_mode/ambient_mode.dart';
-import 'package:my_wear_app/counter/counter.dart';
+import 'package:my_wear_app/watch/counter.dart';
 import 'package:my_wear_app/l10n/l10n.dart';
 
 class App extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:my_wear_app/counter/counter.dart';
+import 'package:my_wear_app/watch/counter.dart';
 import 'package:my_wear_app/l10n/l10n.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;

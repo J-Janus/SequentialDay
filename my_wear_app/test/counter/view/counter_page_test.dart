@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:my_wear_app/counter/counter.dart';
+import 'package:my_wear_app/watch/counter.dart';
 import 'package:wearable_rotary/wearable_rotary.dart';
 
 import '../../helpers/helpers.dart';
