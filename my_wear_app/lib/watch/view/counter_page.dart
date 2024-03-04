@@ -7,26 +7,53 @@ import 'package:my_wear_app/l10n/l10n.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
+import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 
-class CounterPage extends StatelessWidget {
+class CounterPage extends StatefulWidget {
   const CounterPage({super.key});
 
   @override
+  State<CounterPage> createState() => _CounterPageState();
+}
+
+class _CounterPageState extends State<CounterPage> {
+  final controller = SwiperController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CounterCubit(),
-      child: CounterView(),
-    );
+    return Swiper(
+                    itemCount: 1,
+                    controller: controller,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CounterView(
+                          key: ValueKey(index),
+                          controller: controller); // Każdy ekran z własnym CounterPage i kluczem
+                    },
+                    pagination: SwiperPagination(),
+                    control: SwiperControl());
   }
 }
 
 class CounterView extends StatefulWidget {
-  CounterView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
+  CounterView(
+      {super.key,
+      @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
+      required this.controller})
+      : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
 
   final Stream<RotaryEvent> rotaryEvents;
+  final SwiperController controller;
 
   @override
   State<CounterView> createState() => _CounterViewState();
