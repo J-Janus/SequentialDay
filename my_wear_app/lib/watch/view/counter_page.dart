@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wear_app/watch/counter.dart';
 import 'package:my_wear_app/l10n/l10n.dart';
+import 'package:my_wear_app/watch/cubit/button_view_cubit.dart';
+import 'package:my_wear_app/watch/cubit/todoist_cubit.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
@@ -32,16 +35,32 @@ class _CounterPageState extends State<CounterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Swiper(
-                    itemCount: 1,
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<TodoistClientCubit>(
+            create: (context) => TodoistClientCubit(),
+          ),
+          BlocProvider<ButtonViewCubit>(
+            create: (context) => ButtonViewCubit(),
+          )
+        ],
+        child: BlocBuilder<TodoistClientCubit, List<String>>(
+          builder: (context, state) {
+            return state.isEmpty
+                ? CircularProgressIndicator.adaptive()
+                : Swiper(
+                    itemCount: state.length,
                     controller: controller,
                     itemBuilder: (BuildContext context, int index) {
                       return CounterView(
                           key: ValueKey(index),
-                          controller: controller); // Każdy ekran z własnym CounterPage i kluczem
+                          controller: controller,
+                          task: state[index]); // Każdy ekran z własnym CounterPage i kluczem
                     },
                     pagination: SwiperPagination(),
                     control: SwiperControl());
+          },
+        ));
   }
 }
 
@@ -49,11 +68,13 @@ class CounterView extends StatefulWidget {
   CounterView(
       {super.key,
       @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-      required this.controller})
+      required this.controller,
+      required this.task})
       : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
 
   final Stream<RotaryEvent> rotaryEvents;
   final SwiperController controller;
+  final String task;
 
   @override
   State<CounterView> createState() => _CounterViewState();
@@ -61,7 +82,7 @@ class CounterView extends StatefulWidget {
 
 class _CounterViewState extends State<CounterView> {
   late final StreamSubscription<RotaryEvent> rotarySubscription;
-
+  final StopWatchTimer _stopWatchTimer = StopWatchTimer();
   @override
   void initState() {
     super.initState();
@@ -72,14 +93,14 @@ class _CounterViewState extends State<CounterView> {
   void dispose() {
     rotarySubscription.cancel();
     super.dispose();
+    _stopWatchTimer.dispose();
   }
 
   void handleRotaryEvent(RotaryEvent event) {
-    final cubit = context.read<CounterCubit>();
     if (event.direction == RotaryDirection.clockwise) {
-      cubit.increment();
+      widget.controller.next(animation: true);
     } else {
-      cubit.decrement();
+      widget.controller.previous(animation: true);
     }
   }
 
@@ -91,20 +112,8 @@ class _CounterViewState extends State<CounterView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () => context.read<CounterCubit>().increment(),
-              child: const Icon(Icons.add),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(l10n.counterAppBarTitle),
-            const CounterText(),
+            Text(widget.task),
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => context.read<CounterCubit>().decrement(),
-              child: const Icon(Icons.remove),
-            ),
           ],
         ),
       ),
@@ -112,13 +121,3 @@ class _CounterViewState extends State<CounterView> {
   }
 }
 
-class CounterText extends StatelessWidget {
-  const CounterText({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final count = context.select((CounterCubit cubit) => cubit.state);
-    return Text('$count', style: theme.textTheme.displayMedium);
-  }
-}
