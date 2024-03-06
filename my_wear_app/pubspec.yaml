@@ -17,6 +17,7 @@ dependencies:
   wearable_rotary: ^2.0.0
   flutter_swiper_view: ^1.1.8 
   stop_watch_timer: ^3.0.2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   bloc_test: ^9.1.2

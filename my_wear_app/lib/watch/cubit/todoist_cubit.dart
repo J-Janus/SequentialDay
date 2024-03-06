@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 class TodoistClientCubit extends Cubit<List<String>> {
   TodoistClientCubit() : super([]){
@@ -10,10 +12,11 @@ class TodoistClientCubit extends Cubit<List<String>> {
 
   Future<void> fetchTasks() async {
     // Fake implementation for fetching tasks
+    String test = dotenv.get('FOO');
     List<String> tasks = [
       'Task 1',
       'Task 2',
-      'Task 3'
+      test
     ];
     emit(tasks);
   }
