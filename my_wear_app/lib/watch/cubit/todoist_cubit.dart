@@ -20,4 +20,18 @@ class TodoistClientCubit extends Cubit<List<String>> {
     ];
     emit(tasks);
   }
+
+  Future<void> closeTask(String id) async {
+    await "1";
+  }
+
+  Future<void> deleteTask(String id) async {
+    await "2";
+  }
+
+  Future<void> moveTask(String id) async {
+    await "3";
+  }
+
 }
+
