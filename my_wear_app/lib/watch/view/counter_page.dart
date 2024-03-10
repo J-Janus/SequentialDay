@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_wear_app/watch/counter.dart';
 import 'package:my_wear_app/l10n/l10n.dart';
 import 'package:my_wear_app/watch/cubit/button_view_cubit.dart';
-import 'package:my_wear_app/watch/cubit/todoist_cubit.dart';
+import 'package:my_wear_app/watch/cubit/task_cubit.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
@@ -37,14 +37,14 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider<TodoistClientCubit>(
-            create: (context) => TodoistClientCubit(),
+          BlocProvider<TaskCubit>(
+            create: (context) => TaskCubit(),
           ),
           BlocProvider<ButtonViewCubit>(
             create: (context) => ButtonViewCubit(),
           )
         ],
-        child: BlocBuilder<TodoistClientCubit, List<String>>(
+        child: BlocBuilder<TaskCubit, List<String>>(
           builder: (context, state) {
             return state.isEmpty
                 ? CircularProgressIndicator.adaptive()

@@ -5,8 +5,26 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
-class TodoistClientCubit extends Cubit<List<String>> {
-  TodoistClientCubit() : super([]){
+abstract class TaskClient {
+  Future<List<String>> fetchTasks() async {
+    return [];
+  }
+
+  Future<void> updateTask(String id, DateTime start_time, DateTime end_time) async {}
+
+  Future<void> addTask(String content, DateTime start_time, DateTime end_time) async {}
+
+  Future<void> closeTask(String id) async {}
+
+  Future<void> reopenTask(String id) async {}
+
+  Future<void> deleteTask(String id) async {}
+
+  Future<void> moveToNextDay(String id) async {}
+}
+
+class TaskCubit extends Cubit<List<String>> {
+  TaskCubit() : super([]){
     fetchTasks();
   }
 
