@@ -18,6 +18,11 @@ dependencies:
   flutter_swiper_view: ^1.1.8 
   stop_watch_timer: ^3.0.2
   flutter_dotenv: ^5.1.0
+  google_sign_in: ^6.2.1
+  googleapis: ^13.1.0
+  googleapis_auth: ^1.5.0
+  url_launcher: ^6.2.5
+
 
 dev_dependencies:
   bloc_test: ^9.1.2
