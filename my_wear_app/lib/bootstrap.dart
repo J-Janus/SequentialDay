@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:my_wear_app/firebase_options.dart';
 
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
@@ -27,7 +29,13 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   };
   await dotenv.load(fileName: ".env");
   Bloc.observer = const AppBlocObserver();
-
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // await Firebase.initializeApp(
+  //       options: DefaultFirebaseOptions.currentPlatform,
+  //   );
   // Add cross-flavor configuration here
 
   runApp(await builder());
