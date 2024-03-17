@@ -31,12 +31,8 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   Bloc.observer = const AppBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
+    options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await Firebase.initializeApp(
-  //       options: DefaultFirebaseOptions.currentPlatform,
-  //   );
-  // Add cross-flavor configuration here
 
   runApp(await builder());
 }
