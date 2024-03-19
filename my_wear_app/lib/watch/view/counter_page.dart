@@ -6,6 +6,7 @@ import 'package:my_wear_app/watch/counter.dart';
 import 'package:my_wear_app/l10n/l10n.dart';
 import 'package:my_wear_app/watch/cubit/button_view_cubit.dart';
 import 'package:my_wear_app/watch/cubit/task_cubit.dart';
+import 'package:my_wear_app/watch/cubit/timer_cubit.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
@@ -37,6 +38,9 @@ class _CounterPageState extends State<CounterPage> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
+          BlocProvider<TimerCubit>(
+            create: (context) => TimerCubit(),
+          ),
           BlocProvider<TaskCubit>(
             create: (context) => TaskCubit(),
           ),
@@ -55,7 +59,7 @@ class _CounterPageState extends State<CounterPage> {
                       return CounterView(
                           key: ValueKey(index),
                           controller: controller,
-                          task: state[index]); // Każdy ekran z własnym CounterPage i kluczem
+                          task: state[index]);
                     },
                     pagination: SwiperPagination(),
                     control: SwiperControl());
@@ -83,9 +87,13 @@ class CounterView extends StatefulWidget {
 class _CounterViewState extends State<CounterView> {
   late final StreamSubscription<RotaryEvent> rotarySubscription;
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
+  late TaskCubit task_provider;
+  
+
   @override
   void initState() {
     super.initState();
+    task_provider = context.read<TaskCubit>();
     rotarySubscription = widget.rotaryEvents.listen(handleRotaryEvent);
   }
 
