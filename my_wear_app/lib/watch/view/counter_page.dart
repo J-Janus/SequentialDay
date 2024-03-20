@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_wear_app/buttonStyler.dart/standardButtonStyle.dart';
 import 'package:my_wear_app/watch/counter.dart';
 import 'package:my_wear_app/l10n/l10n.dart';
 import 'package:my_wear_app/watch/cubit/button_view_cubit.dart';
@@ -114,14 +115,60 @@ class _CounterViewState extends State<CounterView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    // final l10n = context.l10n;
     return Scaffold(
       body: SizedBox.expand(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(widget.task),
-            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+              },
+              child: Text("task name"),
+            ),
+            const SizedBox(height: 20),
+            BlocBuilder<TimerCubit, String>(
+              builder: (context, state) {
+                return Text(state);
+              },
+            ),
+            const SizedBox(height: 20),
+            BlocBuilder<ButtonViewCubit, ButtonView>(
+              builder: (context, state) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (state == ButtonView.start)
+                      ElevatedButton(
+                          onPressed: () {
+                            context.read<TimerCubit>().start();
+                            context.read<ButtonViewCubit>().stop();
+                          },
+                          style: myButtonStyle,
+                          child: const Icon(Icons.play_arrow)),
+                    if (state == ButtonView.stop)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                              },
+                              onLongPress: () {
+                              },
+                              style: myButtonStyle,
+                              child: const Icon(Icons.pause)),
+                          const SizedBox(width: 10),
+                          ElevatedButton(
+                              onPressed: () {
+                              },
+                              style: myButtonStyle,
+                              child: const Icon(Icons.save))
+                        ],
+                      )
+                  ],
+                );
+              },
+            ),
           ],
         ),
       ),
