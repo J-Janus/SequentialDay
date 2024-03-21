@@ -142,7 +142,6 @@ class _CounterViewState extends State<CounterView> {
                       ElevatedButton(
                           onPressed: () {
                             context.read<TimerCubit>().start();
-                            context.read<ButtonViewCubit>().stop();
                           },
                           style: myButtonStyle,
                           child: const Icon(Icons.play_arrow)),
@@ -152,14 +151,17 @@ class _CounterViewState extends State<CounterView> {
                         children: [
                           ElevatedButton(
                               onPressed: () {
+                                context.read<TimerCubit>().stop();
                               },
                               onLongPress: () {
+                                context.read<TimerCubit>().restart();
                               },
                               style: myButtonStyle,
                               child: const Icon(Icons.pause)),
                           const SizedBox(width: 10),
                           ElevatedButton(
                               onPressed: () {
+                                context.read<TimerCubit>().complete_task("taks_id", "task_content");
                               },
                               style: myButtonStyle,
                               child: const Icon(Icons.save))

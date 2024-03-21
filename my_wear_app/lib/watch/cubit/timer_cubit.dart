@@ -24,4 +24,10 @@ class TimerCubit extends Cubit<String> {
   void restart() {
     _stopWatchTimer.onResetTimer();
   }
+
+  void complete_task(String task, String content){
+    
+  }
+
+
 }
