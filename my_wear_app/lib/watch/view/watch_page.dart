@@ -14,14 +14,14 @@ import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 
-class CounterPage extends StatefulWidget {
-  const CounterPage({super.key});
+class WatchPage extends StatefulWidget {
+  const WatchPage({super.key});
 
   @override
-  State<CounterPage> createState() => _CounterPageState();
+  State<WatchPage> createState() => _WatchPageState();
 }
 
-class _CounterPageState extends State<CounterPage> {
+class _WatchPageState extends State<WatchPage> {
   final controller = SwiperController();
 
   @override
