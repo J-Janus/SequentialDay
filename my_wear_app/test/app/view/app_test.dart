@@ -14,7 +14,7 @@ void main() {
 
     testWidgets('renders CounterPage', (tester) async {
       await tester.pumpWidget(const App());
-      expect(find.byType(CounterPage), findsOneWidget);
+      expect(find.byType(WatchPage), findsOneWidget);
     });
 
     group('renders the correct color scheme', () {
