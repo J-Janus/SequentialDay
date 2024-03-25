@@ -1,34 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-enum SelectCredentialPageState {
+class SelectCredentialPageState {
+   
+  CredentialType? item1;
+  PlatformType? item2;
+  bool item0;
+
+  SelectCredentialPageState(this.item1, this.item2, [this.item0 = false]);
+
+  bool is_credential_type(){
+    if (this.item1==null)
+      return false;
+    else
+      return true;
+  }
+  bool is_platform_type(){
+    if (this.item2==null)
+      return false;
+    else
+      return true;
+  }
+
+  bool is_noting_selected(){
+     return this.item0;
+  }
+}
+
+enum CredentialType{ CredentialA, CredentialB }
+enum PlatformType{ PlatformA, PlatformB }
+
+
+enum SelectCredentialPageOptions {
   NothingSelected,
-  selectCredentialType,
+  selectCredentialTypeA,
+  selectCredentialTypeB,
+  CredentialAPlatformA,
+  CredentialAPlatformB,
   addCredential,
   filledCredential
 }
 
 class SelectCredentialCubit extends Cubit<SelectCredentialPageState> {
-  SelectCredentialCubit() : super(SelectCredentialPageState.NothingSelected);
+  SelectCredentialCubit() : super(SelectCredentialPageState(null, null));
 
   void nothingSelected() {
-    emit(SelectCredentialPageState.NothingSelected);
+    emit(SelectCredentialPageState(null, null));
   }
 
-  void selectCredential() {
-    emit(SelectCredentialPageState.NothingSelected);
+  void selectCredentialA() {
+    emit(SelectCredentialPageState(CredentialType.CredentialA, null, true));
   }
 
-  void selectCredentialType() {
-    emit(SelectCredentialPageState.selectCredentialType);
-  }
-
-  void addCredential() {
-    emit(SelectCredentialPageState.addCredential);
-  }
-
-  void fillCredential() {
-    emit(SelectCredentialPageState.filledCredential);
+  void selectCredentialB() {
+    emit(SelectCredentialPageState(CredentialType.CredentialB, null, true));
   }
 }
 
@@ -53,77 +78,96 @@ class _DynamicButtonsPageState extends State<DynamicButtonsPage> {
 
     return BlocProvider(
       create: (context) => SelectCredentialCubit(),
-      child: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          // Pozycjonowanie górnych przycisków 20 pikseli powyżej środka ekranu
-          Positioned(
-            top: centerOffset - centerOffset / 2, // 20 pikseli powyżej środka
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () => setState(() {
-                    showBottomButtons = true;
-                    highlightedTopButton = 'T'; // Podświetlenie przycisku T
-                  }),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: highlightedTopButton == 'T'
-                        ? Colors.green
-                        : null, // Podświetlenie jeśli aktywny
-                  ),
-                  child: const Text('add T'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => setState(() {
-                    showBottomButtons = true;
-                    highlightedTopButton = 'B'; // Podświetlenie przycisku B
-                  }),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: highlightedTopButton == 'B'
-                        ? Colors.green
-                        : null, // Podświetlenie jeśli aktywny
-                  ),
-                  child: const Text('add B'),
-                ),
-              ],
-            ),
-          ),
-          // Pozycjonowanie dolnych przycisków 20 pikseli poniżej środka ekranu
-          Visibility(
-            visible: showBottomButtons,
-            child: Positioned(
-              top: centerOffset + 40, // 20 pikseli poniżej środka
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () => setState(() => highlightedBottomButton =
-                        'X'), // Podświetlenie przycisku X
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: highlightedBottomButton == 'X'
-                          ? Colors.blue
-                          : null, // Podświetlenie jeśli aktywny
+      child: BlocBuilder<SelectCredentialCubit, SelectCredentialPageState>(
+        builder: (context, state) {
+          return Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              // Pozycjonowanie górnych przycisków 20 pikseli powyżej środka ekranu
+              Positioned(
+                top: centerOffset -
+                    centerOffset / 2, // 20 pikseli powyżej środka
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        if (state.item1==CredentialType.CredentialA)
+                          context
+                              .read<SelectCredentialCubit>()
+                              .nothingSelected();
+                        else
+                          context
+                              .read<SelectCredentialCubit>()
+                              .selectCredentialA();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: state.item1==CredentialType.CredentialA
+                            ? Colors.green
+                            : null, // Podświetlenie jeśli aktywny
+                      ),
+                      child: const Text('add T'),
                     ),
-                    child: const Text('add X'),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () => setState(() => highlightedBottomButton =
-                        'Y'), // Podświetlenie przycisku Y
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: highlightedBottomButton == 'Y'
-                          ? Colors.blue
-                          : null, // Podświetlenie jeśli aktywny
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        if (state.item1==CredentialType.CredentialB)
+                          context
+                              .read<SelectCredentialCubit>()
+                              .nothingSelected();
+                        else
+                          context
+                              .read<SelectCredentialCubit>()
+                              .selectCredentialB();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: state.item1==CredentialType.CredentialB
+                            ? Colors.green
+                            : null, // Podświetlenie jeśli aktywny
+                      ),
+                      child: const Text('add B'),
                     ),
-                    child: const Text('add Y'),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
-        ],
+              // Pozycjonowanie dolnych przycisków 20 pikseli poniżej środka ekranu
+              Visibility(
+                visible: state.item0,
+                child: Positioned(
+                  top: centerOffset + 40, // 20 pikseli poniżej środka
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ElevatedButton(
+                        onPressed: () => setState(() =>
+                            highlightedBottomButton =
+                                'X'), // Podświetlenie przycisku X
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: highlightedBottomButton == 'X'
+                              ? Colors.blue
+                              : null, // Podświetlenie jeśli aktywny
+                        ),
+                        child: const Text('add X'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () => setState(() =>
+                            highlightedBottomButton =
+                                'Y'), // Podświetlenie przycisku Y
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: highlightedBottomButton == 'Y'
+                              ? Colors.blue
+                              : null, // Podświetlenie jeśli aktywny
+                        ),
+                        child: const Text('add Y'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
