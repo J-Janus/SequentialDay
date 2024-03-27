@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_wear_app/ambient_mode/ambient_mode.dart';
+import 'package:my_wear_app/app/view/app_mobile.dart';
 import 'package:my_wear_app/auth/loginPageMediator.dart';
 import 'package:my_wear_app/auth/login_page.dart';
 import 'package:my_wear_app/test_google/test.dart';
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AmbientModeBuilder(
-      child: loginPageMediator(),
+      child: loginPageWraper(),
       builder: (context, isAmbientModeActive, child) {
         return MaterialApp(
           theme: ThemeData(

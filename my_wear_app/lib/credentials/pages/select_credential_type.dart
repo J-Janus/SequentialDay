@@ -9,67 +9,59 @@ class SelectCredentialPageState {
 
   SelectCredentialPageState(this.item1, this.item2, [this.item0 = false]);
 
-  bool is_credential_type(){
-    if (this.item1==null)
-      return false;
-    else
-      return true;
-  }
-  bool is_platform_type(){
-    if (this.item2==null)
-      return false;
-    else
-      return true;
-  }
-
-  bool is_noting_selected(){
-     return this.item0;
-  }
 }
 
-enum CredentialType{ CredentialA, CredentialB }
-enum PlatformType{ PlatformA, PlatformB }
+enum CredentialType{ credentialA, credentialB }
+enum PlatformType{ platformA, platformB }
 
 
-enum SelectCredentialPageOptions {
-  NothingSelected,
-  selectCredentialTypeA,
-  selectCredentialTypeB,
-  CredentialAPlatformA,
-  CredentialAPlatformB,
-  addCredential,
-  filledCredential
-}
 
 class SelectCredentialCubit extends Cubit<SelectCredentialPageState> {
   SelectCredentialCubit() : super(SelectCredentialPageState(null, null));
 
+  CredentialType? credential = null;
+
   void nothingSelected() {
+    this.credential = null;
     emit(SelectCredentialPageState(null, null));
   }
 
   void selectCredentialA() {
-    emit(SelectCredentialPageState(CredentialType.CredentialA, null, true));
+    this.credential = CredentialType.credentialA;
+    emit(SelectCredentialPageState(CredentialType.credentialA, null, true));
   }
 
   void selectCredentialB() {
-    emit(SelectCredentialPageState(CredentialType.CredentialB, null, true));
+    this.credential = CredentialType.credentialB;
+    emit(SelectCredentialPageState(CredentialType.credentialB, null, true));
+  }
+
+  void selectPlatformA() {
+    emit(SelectCredentialPageState(this.credential, PlatformType.platformA, true));
+  }
+
+  void selectPlatformB() {
+    emit(SelectCredentialPageState(this.credential, PlatformType.platformB, true));
+  }
+
+  void canclePlatform() {
+    emit(SelectCredentialPageState(this.credential, null, true));
   }
 }
 
-class DynamicButtonsPage extends StatefulWidget {
-  const DynamicButtonsPage({Key? key}) : super(key: key);
+class SelectCredentialPage extends StatefulWidget {
+  const SelectCredentialPage({Key? key}) : super(key: key);
 
   @override
-  State<DynamicButtonsPage> createState() => _DynamicButtonsPageState();
+  State<SelectCredentialPage> createState() => _SelectCredentialPageState();
 }
 
-class _DynamicButtonsPageState extends State<DynamicButtonsPage> {
+class _SelectCredentialPageState extends State<SelectCredentialPage> {
   bool showBottomButtons = false;
   String?
-      highlightedTopButton; // Zmienna do śledzenia podświetlonego górnego przycisku
+      highlightedTopButton;
   String?
-      highlightedBottomButton; // Zmienna do śledzenia podświetlonego dolnego przycisku
+      highlightedBottomButton;
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +75,15 @@ class _DynamicButtonsPageState extends State<DynamicButtonsPage> {
           return Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              // Pozycjonowanie górnych przycisków 20 pikseli powyżej środka ekranu
               Positioned(
                 top: centerOffset -
-                    centerOffset / 2, // 20 pikseli powyżej środka
+                    centerOffset / 2, 
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ElevatedButton(
                       onPressed: () {
-                        if (state.item1==CredentialType.CredentialA)
+                        if (state.item1==CredentialType.credentialA)
                           context
                               .read<SelectCredentialCubit>()
                               .nothingSelected();
@@ -102,16 +93,16 @@ class _DynamicButtonsPageState extends State<DynamicButtonsPage> {
                               .selectCredentialA();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: state.item1==CredentialType.CredentialA
+                        backgroundColor: state.item1==CredentialType.credentialA
                             ? Colors.green
-                            : null, // Podświetlenie jeśli aktywny
+                            : null, 
                       ),
                       child: const Text('add T'),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
-                        if (state.item1==CredentialType.CredentialB)
+                        if (state.item1==CredentialType.credentialB)
                           context
                               .read<SelectCredentialCubit>()
                               .nothingSelected();
@@ -121,43 +112,56 @@ class _DynamicButtonsPageState extends State<DynamicButtonsPage> {
                               .selectCredentialB();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: state.item1==CredentialType.CredentialB
+                        backgroundColor: state.item1==CredentialType.credentialB
                             ? Colors.green
-                            : null, // Podświetlenie jeśli aktywny
+                            : null, 
                       ),
                       child: const Text('add B'),
                     ),
                   ],
                 ),
               ),
-              // Pozycjonowanie dolnych przycisków 20 pikseli poniżej środka ekranu
               Visibility(
                 visible: state.item0,
                 child: Positioned(
-                  top: centerOffset + 40, // 20 pikseli poniżej środka
+                  top: centerOffset + 40, 
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       ElevatedButton(
-                        onPressed: () => setState(() =>
-                            highlightedBottomButton =
-                                'X'), // Podświetlenie przycisku X
+                        onPressed: () {
+                        if (state.item2==PlatformType.platformA)
+                          context
+                              .read<SelectCredentialCubit>()
+                              .canclePlatform();
+                        else
+                          context
+                              .read<SelectCredentialCubit>()
+                              .selectPlatformA();
+                      }, 
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: highlightedBottomButton == 'X'
+                          backgroundColor: state.item2==PlatformType.platformA
                               ? Colors.blue
-                              : null, // Podświetlenie jeśli aktywny
+                              : null, 
                         ),
                         child: const Text('add X'),
                       ),
                       const SizedBox(width: 10),
                       ElevatedButton(
-                        onPressed: () => setState(() =>
-                            highlightedBottomButton =
-                                'Y'), // Podświetlenie przycisku Y
+                        onPressed: () {
+                        if (state.item2==PlatformType.platformB)
+                          context
+                              .read<SelectCredentialCubit>()
+                              .canclePlatform();
+                        else
+                          context
+                              .read<SelectCredentialCubit>()
+                              .selectPlatformB();
+                      }, 
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: highlightedBottomButton == 'Y'
+                          backgroundColor: state.item2==PlatformType.platformB
                               ? Colors.blue
-                              : null, // Podświetlenie jeśli aktywny
+                              : null, 
                         ),
                         child: const Text('add Y'),
                       ),
